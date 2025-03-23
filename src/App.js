@@ -1,48 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { Chat } from "./components/Chat";
-import { Auth } from "./components/Auth.js";
-import { AppWrapper } from "./components/AppWrapper";
-import Cookies from "universal-cookie";
+import { useState } from "react";
 import "./App.css";
+import Auth from "./components/Auth";
+import Cookies from "universal-cookie";
+import CreateRoom from "./components/CreateRoom";
+import Chat from "./components/Chat";
+import { signOut } from "firebase/auth";
+import { auth } from "./firebase-config";
 
-const cookies = new Cookies();
-
-function ChatApp() {
-  const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
-  const [isInChat, setIsInChat] = useState(null);
+function App() {
+  const cookies = new Cookies();
+  const [isAuth, setIsAuth] = useState(cookies.get("authtoken"));
   const [room, setRoom] = useState("");
 
-  if (!isAuth) {
+  const handleSignOut = async () => {
+    signOut(auth);
+    cookies.remove("authtoken");
+    setIsAuth(false);
+    setRoom(null);
+  };
+  if (!isAuth)
     return (
-      <AppWrapper
-        isAuth={isAuth}
-        setIsAuth={setIsAuth}
-        setIsInChat={setIsInChat}
-      >
+      <div className="login-container">
+        <h1>Welcome to Chatroom</h1>
         <Auth setIsAuth={setIsAuth} />
-      </AppWrapper>
+      </div>
+    );
+  else {
+    return (
+      <div className="container">
+        <button onClick={handleSignOut} className="signout">
+          SignOut
+        </button>
+        {room ? <Chat room={room} /> : <CreateRoom setRoom={setRoom} />}
+      </div>
     );
   }
-
-  return (
-    <AppWrapper isAuth={isAuth} setIsAuth={setIsAuth} setIsInChat={setIsInChat}>
-      {!isInChat ? (
-        <div className="room">
-          <label> Type room name: </label>
-          <input onChange={(e) => setRoom(e.target.value)} />
-          <button
-            onClick={() => {
-              setIsInChat(true);
-            }}
-          >
-            Enter Chat
-          </button>
-        </div>
-      ) : (
-        <Chat room={room} />
-      )}
-    </AppWrapper>
-  );
 }
-
-export default ChatApp;
+export default App;

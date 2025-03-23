@@ -1,64 +1,202 @@
-body {
+* {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
-
-.App {
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: url(../public/bg.jpg);
+  background-size: cover;
+  padding: 0 5vw;
+}
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.login-container h1 {
+  position: absolute;
+  top: 100px;
+  font-size: 5rem;
+  color: rgb(255, 255, 255);
+  text-align: center;
+}
+.login-container button {
   display: flex;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
-  flex-direction: column;
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.app-header {
-  text-align: center;
-  background-color: #3b5998;
-  color: white;
-  width: 100%;
-}
-
-.app-container {
-  margin-top: 50px;
-}
-
-.room {
-  display: flex;
-  flex-direction: column;
-}
-
-.room label {
-  text-align: center;
-  font-size: 25px;
-  margin-bottom: 20px;
-}
-
-.room input {
-  width: 200px;
-  height: 30px;
-  border: 2px solid #3b5998;
-  border-radius: 6px;
-  padding-left: 5px;
-  font-size: 20px;
-  text-align: center;
-  margin: 5px;
-}
-.room button {
-  width: 210px;
-  height: 40px;
+  padding: 10px 12px;
+  gap: 5px;
+  font-weight: bold;
+  border-radius: 20px;
   border: none;
-  border-radius: 6px;
-  padding-left: 5px;
-  font-size: 20px;
-  text-align: center;
-  margin: 5px;
-  background-color: #3b5998;
+  box-shadow: 6px 3px 16px rgb(0 0 0 / 10%);
+  background-color: white;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.login-container button:hover {
+  box-shadow: 6px 3px 16px rgb(0 0 0 / 15%);
+}
+.login-container img {
+  width: 20px;
+}
+.signout {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background-color: red;
   color: white;
+  border-radius: 5px;
+  padding: 5px;
+  border: none;
   cursor: pointer;
 }
 
-.sign-out {
-  margin-top: 50px;
+.container {
+  display: flex;
+  height: 90vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #3924a3;
+}
+.create-room {
+  background-color: #eee5ff;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 20px;
+  border-radius: 8px;
+}
+.create-room input {
+  height: 35px;
+  border: none;
+  border: 3px solid #3924a3;
+  border-radius: 5px;
+  outline: none;
+  padding: 3px;
+  text-align: center;
+  font-size: 1rem;
+  color: #3924a3;
+  font-weight: bold;
+  background-color: #eee5ff;
+}
+.create-room input::placeholder {
+  color: #3924a3;
+  font-size: 1rem;
+  text-align: center;
+}
+.create-room button {
+  height: 35px;
+  background-color: #3924a3;
+  color: #e1d6fe;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.chat {
+  background-color: #eee5ff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 8px;
+}
+.chat h1 {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+#chat-window {
+  /* background-color: red; */
+  height: 50vh;
+  overflow: scroll;
+  width: 250px;
+  border-radius: 8px;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+#chat-window::-webkit-scrollbar {
+  display: none;
+}
+form {
+  display: flex;
+  align-items: center;
+  border: 2px solid #3924a3;
+  border-radius: 8px;
+}
+form input {
+  width: 85%;
+  height: 30px;
+  border: none;
+  background-color: transparent;
+  padding: 2px;
+  outline: none;
+}
+form button {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  border: none;
+  background-color: transparent;
+  color: #3924a3;
 }
 
+.singlemsg {
+  display: inline-block;
+  min-width: 100px;
+}
+.singlemsg .username {
+  font-size: 0.7rem;
+  display: inline-block;
+  color: gray;
+}
+.singlemsg .content {
+  background-color:rgb(136 49 179);
+  min-width: 50px;
+  min-height: 20px;
+  color: white;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: 10px;
+  border-top-left-radius: 0;
+}
+.copyright {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+}
+.copyright p {
+  color: gray;
+  font-size: small;
+}
+.copyright .made {
+  position: relative;
+  bottom: 1;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 2px;
+  background-color: inherit;
+  color: rgba(0, 0, 0, 0.547);
+  font-weight: bold;
+}
+.made a {
+  color: inherit;
+  text-decoration: none;
+}
+.made a:hover {
+  text-decoration: underline;
+}
