@@ -13,53 +13,54 @@ import SendIcon from "@mui/icons-material/Send";
 import SingleChat from "./SingleChat";
 
 function Chat(props) {
-  const messageRef = collection(db, "messages");
   const [msgs, setMgs] = useState([]);
+  const [newMsg, setNewMsg] = useState("");
 
-  function updateScroll() {
-    var element = document.getElementById("chat-window");
-    if (element) {
-      element.scrollTop = element.scrollHeight;
-    }
-  }
-  
+  // Always create fresh collection reference
+  const getMessageRef = () => collection(db, "messages");
+
+  // Improved scroll handling
   useEffect(() => {
-    updateScroll();
+    const element = document.getElementById("chat-window");
+    if (element) {
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [msgs]);
 
   useEffect(() => {
     const queryMessage = query(
-      messageRef,
+      getMessageRef(),
       where("room", "==", props.room),
-      orderBy("createdAt")
+      orderBy("createdAt", "asc")
     );
     
     const unsubscribe = onSnapshot(queryMessage, (snapshot) => {
-      let messages = [];
-      snapshot.forEach((doc) => {
-        messages.push({ ...doc.data(), id: doc.id });
-      });
-      console.log("Messages received:", messages); // Debug line
+      const messages = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
       setMgs(messages);
     }, (error) => {
       console.error("Error fetching messages:", error);
+      setMgs([]);
     });
     
     return () => unsubscribe();
-  }, [props.room, messageRef]); // Added props.room to dependency array
+  }, [props.room]);
 
-  const [newMsg, setNewMsg] = useState("");
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newMsg === "") return;
+    if (!newMsg.trim()) return;
 
     try {
-      await addDoc(messageRef, {
-        text: newMsg,
+      await addDoc(getMessageRef(), {
+        text: newMsg.trim(),
         user: auth.currentUser.displayName,
         createdAt: serverTimestamp(),
-        room: props.room,
+        room: props.room
       });
       setNewMsg("");
     } catch (error) {
@@ -74,12 +75,13 @@ function Chat(props) {
         id="chat-window" 
         style={{ 
           height: "400px", 
-          overflowY: "scroll", 
+          overflowY: "auto", 
           border: "1px solid #ccc", 
           padding: "10px", 
           marginBottom: "20px",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          width: "100%"
         }}
       >
         {msgs && msgs.length > 0 ? (
@@ -90,7 +92,8 @@ function Chat(props) {
               style={{
                 display: "flex", 
                 justifyContent: message.user === auth.currentUser.displayName ? "flex-end" : "flex-start",
-                width: "100%"
+                width: "100%",
+                marginBottom: "10px"
               }}
             >
               <SingleChat message={message} />
@@ -100,7 +103,7 @@ function Chat(props) {
           <p>No messages in this room yet. Be the first to send a message!</p>
         )}
       </div>
-      <form onSubmit={handleSubmit} style={{ display: "flex" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", width: "100%" }}>
         <input
           type="text"
           placeholder="Type your message here..."
