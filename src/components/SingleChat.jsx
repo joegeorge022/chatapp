@@ -2,18 +2,15 @@ import React from "react";
 import { auth } from "../firebase-config";
 
 function SingleChat({ message }) {
-  // Format timestamp correctly
   const formatTime = (timestamp) => {
     if (!timestamp) return "Sending...";
     
-    // Handle both Firestore timestamp objects and server timestamps
     try {
-      // If it's a Firestore timestamp (has toDate method)
       if (timestamp.toDate) {
-        return timestamp.toDate().toLocaleTimeString();
+        const date = timestamp.toDate();
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       } 
-      // If it's already a Date object or timestamp number
-      return new Date(timestamp).toLocaleTimeString();
+      return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } catch (error) {
       console.error("Error formatting timestamp:", error);
       return "Timestamp error";
@@ -26,28 +23,25 @@ function SingleChat({ message }) {
     <div 
       className="message" 
       style={{ 
-        margin: "5px 0",
-        padding: "10px",
-        borderRadius: "12px",
-        backgroundColor: isCurrentUser ? "#e6f7ff" : "#f0f0f0",
-        maxWidth: "70%",
-        wordBreak: "break-word",
-        boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-        alignSelf: isCurrentUser ? "flex-end" : "flex-start"
+        backgroundColor: isCurrentUser ? "#3924a3" : "#f0f0f0",
+        color: isCurrentUser ? "white" : "#333",
+        alignSelf: isCurrentUser ? "flex-end" : "flex-start",
+        borderBottomRightRadius: isCurrentUser ? "4px" : "18px",
+        borderBottomLeftRadius: isCurrentUser ? "18px" : "4px",
       }}
     >
       <div style={{ 
         fontWeight: "bold", 
         fontSize: "0.9em", 
         marginBottom: "4px",
-        color: isCurrentUser ? "#0084ff" : "#333"
+        color: isCurrentUser ? "rgba(255, 255, 255, 0.9)" : "#555"
       }}>
         {message.user}
       </div>
       <div style={{ fontSize: "1em" }}>{message.text}</div>
       <div style={{ 
         fontSize: "0.7em", 
-        color: "#888", 
+        color: isCurrentUser ? "rgba(255, 255, 255, 0.7)" : "#888", 
         marginTop: "5px",
         textAlign: "right" 
       }}>

@@ -1,25 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {
-  addDoc,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  where,
-} from "firebase/firestore";
-import { auth, db } from "../firebase-config";
-import SendIcon from "@mui/icons-material/Send";
+import React, { useState, useEffect } from "react";
+import { db, auth } from "../firebase-config";
+import { collection, addDoc, serverTimestamp, query, where, orderBy, onSnapshot } from "firebase/firestore";
 import SingleChat from "./SingleChat";
 
 function Chat(props) {
   const [msgs, setMgs] = useState([]);
   const [newMsg, setNewMsg] = useState("");
 
-  // Always create fresh collection reference
   const getMessageRef = () => collection(db, "messages");
 
-  // Improved scroll handling
   useEffect(() => {
     const element = document.getElementById("chat-window");
     if (element) {
@@ -58,7 +47,7 @@ function Chat(props) {
     try {
       await addDoc(getMessageRef(), {
         text: newMsg.trim(),
-        user: auth.currentUser.displayName,
+        user: auth.currentUser.displayName || "Anonymous User",
         createdAt: serverTimestamp(),
         room: props.room
       });
@@ -70,20 +59,16 @@ function Chat(props) {
   
   return (
     <div className="chat">
-      <h1>{props.room} Chatroom</h1>
-      <div 
-        id="chat-window" 
-        style={{ 
-          height: "400px", 
-          overflowY: "auto", 
-          border: "1px solid #ccc", 
-          padding: "10px", 
-          marginBottom: "20px",
-          display: "flex",
-          flexDirection: "column",
-          width: "100%"
-        }}
-      >
+      <div className="chat-header">
+        <button 
+          className="back-btn" 
+          onClick={() => props.setRoom("")}
+        >
+          ← Back
+        </button>
+        <h1>{props.room} Chatroom</h1>
+      </div>
+      <div id="chat-window">
         {msgs && msgs.length > 0 ? (
           msgs.map((message) => (
             <div 
@@ -92,27 +77,26 @@ function Chat(props) {
               style={{
                 display: "flex", 
                 justifyContent: message.user === auth.currentUser.displayName ? "flex-end" : "flex-start",
-                width: "100%",
-                marginBottom: "10px"
               }}
             >
               <SingleChat message={message} />
             </div>
           ))
         ) : (
-          <p>No messages in this room yet. Be the first to send a message!</p>
+          <div className="no-messages">
+            No messages yet. Start the conversation!
+          </div>
         )}
       </div>
-      <form onSubmit={handleSubmit} style={{ display: "flex", width: "100%" }}>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Type your message here..."
-          onChange={(e) => setNewMsg(e.target.value)}
           value={newMsg}
-          style={{ flexGrow: 1, padding: "10px", marginRight: "10px" }}
+          onChange={(e) => setNewMsg(e.target.value)}
+          placeholder="Type your message..."
         />
-        <button type="submit" style={{ padding: "10px" }}>
-          <SendIcon />
+        <button type="submit">
+          <span>➤</span>
         </button>
       </form>
     </div>

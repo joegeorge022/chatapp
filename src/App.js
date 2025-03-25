@@ -2,8 +2,8 @@ import { useState } from "react";
 import "./App.css";
 import Auth from "./components/Auth";
 import Cookies from "universal-cookie";
-import CreateRoom from "./components/CreateRoom";
 import Chat from "./components/Chat";
+import RoomList from "./components/RoomList";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase-config";
 
@@ -18,6 +18,7 @@ function App() {
     setIsAuth(false);
     setRoom(null);
   };
+  
   if (!isAuth)
     return (
       <div className="login-container">
@@ -31,9 +32,10 @@ function App() {
         <button onClick={handleSignOut} className="signout">
           SignOut
         </button>
-        {room ? <Chat room={room} /> : <CreateRoom setRoom={setRoom} />}
+        {room ? <Chat room={room} setRoom={setRoom} /> : <RoomList setRoom={setRoom} />}
       </div>
     );
   }
 }
+
 export default App;
